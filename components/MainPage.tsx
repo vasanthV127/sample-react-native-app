@@ -1,85 +1,57 @@
-import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
-const musicians = [
-  {
-    name: 'Ilaiyaraaja',
-    genre: 'Film, Classical, Folk',
-    yearsActive: '1976–present',
-    description: 'Legendary composer, conductor, and lyricist known for his innovative music in Tamil cinema.'
-  },
-  {
-    name: 'A. R. Rahman',
-    genre: 'Film, Electronic, World',
-    yearsActive: '1992–present',
-    description: 'Internationally acclaimed composer and singer, winner of Academy and Grammy awards.'
-  },
-  {
-    name: 'Yuvan Shankar Raja',
-    genre: 'Film, Pop, Electronic',
-    yearsActive: '1997–present',
-    description: 'Popular for his youthful music and innovative soundtracks in Tamil films.'
-  },
-  {
-    name: 'Harris Jayaraj',
-    genre: 'Film, Pop',
-    yearsActive: '2001–present',
-    description: 'Known for melodious tunes and chart-topping hits in Tamil cinema.'
-  },
-  {
-    name: 'Deva',
-    genre: 'Film, Folk',
-    yearsActive: '1984–present',
-    description: 'Prolific composer famous for mass hits and folk-inspired music.'
-  },
-  {
-    name: 'Anirudh Ravichander',
-    genre: 'Film, Pop, EDM',
-    yearsActive: '2011–present',
-    description: 'Young composer known for energetic and viral songs.'
-  },
-  {
-    name: 'Vidyasagar',
-    genre: 'Film, Classical',
-    yearsActive: '1989–present',
-    description: 'Renowned for melodious and classical-inspired compositions.'
-  },
-  {
-    name: 'G. V. Prakash Kumar',
-    genre: 'Film, Pop',
-    yearsActive: '2006–present',
-    description: 'Composer and singer, known for catchy tunes and youthful music.'
-  },
-  {
-    name: 'Santhosh Narayanan',
-    genre: 'Film, Indie, Folk',
-    yearsActive: '2012–present',
-    description: 'Experimental composer blending folk and indie styles.'
-  },
-  {
-    name: 'D. Imman',
-    genre: 'Film, Folk',
-    yearsActive: '2002–present',
-    description: 'Known for rural and folk-inspired music in Tamil films.'
-  },
-];
+
 
 const MainPage: React.FC = () => {
+  const [apiData, setApiData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
+
+  const fetchApiData = () => {
+    fetch('https://jsonplaceholder.typicode.com/posts?_limit=5')
+      .then((response) => response.json())
+      .then((data) => {
+        setApiData(data);
+        setLoading(false);
+        setRefreshing(false);
+      })
+      .catch(() => {
+        setError('Failed to fetch API data');
+        setLoading(false);
+        setRefreshing(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchApiData();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tamil Musicians</Text>
-      <FlatList
-        data={musicians}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.detail}>Genre: {item.genre}</Text>
-            <Text style={styles.detail}>Years Active: {item.yearsActive}</Text>
-            <Text style={styles.description}>{item.description}</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.title}>Sample API Data</Text>
+      {loading ? (
+        <ActivityIndicator size="small" color="#007AFF" />
+      ) : error ? (
+        <Text style={{ color: 'red' }}>{error}</Text>
+      ) : (
+        <FlatList
+          data={apiData}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.apiItem}>
+              <Text style={styles.apiTitle}>{item.title}</Text>
+              <Text style={styles.apiBody}>{item.body}</Text>
+            </View>
+          )}
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            fetchApiData();
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -119,6 +91,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginTop: 4,
+  },
+  apiItem: {
+    padding: 10,
+    backgroundColor: '#e6f7ff',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  apiTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 2,
+    color: '#007AFF',
+  },
+  apiBody: {
+    fontSize: 14,
+    color: '#333',
   },
 });
 

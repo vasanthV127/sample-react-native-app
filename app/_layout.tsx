@@ -1,13 +1,12 @@
 import 'react-native-reanimated';
-import TestFeatures from '../components/TestFeatures';
+import AppNavigation from '../AppNavigation';
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
-// Temporary: Add TestFeatures as a screen for testing
 export default function Layout() {
-  return <TestFeatures />;
+  return <AppNavigation />;
 }
 
 

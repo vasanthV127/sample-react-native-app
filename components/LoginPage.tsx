@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
-interface LoginProps {
-  onLogin: () => void;
-}
-
-const LoginPage: React.FC<LoginProps> = ({ onLogin }) => {
+// Accept navigation prop from React Navigation
+const LoginPage = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,7 +13,7 @@ const LoginPage: React.FC<LoginProps> = ({ onLogin }) => {
       return;
     }
     setError('');
-    onLogin();
+    navigation.replace('Home');
   };
 
   return (
