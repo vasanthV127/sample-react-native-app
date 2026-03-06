@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 
-// Accept navigation prop from React Navigation
 const LoginPage = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +12,7 @@ const LoginPage = ({ navigation }: any) => {
       return;
     }
     setError('');
-    navigation.replace('Home');
+    navigation.replace('Home', { user: { username } });
   };
 
   return (
